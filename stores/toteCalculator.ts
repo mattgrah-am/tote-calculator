@@ -14,6 +14,27 @@ interface SavedRace {
   currency: string;
   payoutPercentage: number;
   ticketPrice: number;
+  numberOfRunners: number;
+}
+
+// Type for old races before numberOfRunners was added
+interface LegacySavedRace {
+  id: number;
+  timestamp: string;
+  runners: Array<{
+    id: number;
+    ticketsSold: number;
+    payout: number;
+    odds: string;
+  }>;
+  totalTickets: number;
+  totalRevenue: number;
+  totalPayout: number;
+  charityProfit: number;
+  currency: string;
+  payoutPercentage: number;
+  ticketPrice: number;
+  numberOfRunners?: number;
 }
 
 export const useToteCalculatorStore = defineStore("toteCalculator", () => {
@@ -22,6 +43,7 @@ export const useToteCalculatorStore = defineStore("toteCalculator", () => {
   const payoutPercentage = ref(50);
   const rounding = ref(0.5);
   const ticketPrice = ref(1.0);
+  const numberOfRunners = ref(15);
 
   // Race data
   const runners = ref(
@@ -34,6 +56,29 @@ export const useToteCalculatorStore = defineStore("toteCalculator", () => {
         odds: "N/A",
       })),
   );
+
+  // Update runners array when number changes
+  const updateRunners = (newCount: number) => {
+    const currentRunners = [...runners.value];
+
+    if (newCount > currentRunners.length) {
+      // Add new runners
+      for (let i = currentRunners.length; i < newCount; i++) {
+        currentRunners.push({
+          id: i + 1,
+          ticketsSold: 0,
+          payout: 0,
+          odds: "N/A",
+        });
+      }
+    } else if (newCount < currentRunners.length) {
+      // Remove excess runners
+      currentRunners.splice(newCount);
+    }
+
+    runners.value = currentRunners;
+    calculatePayouts();
+  };
 
   // Saved races
   const savedRaces = ref<SavedRace[]>([]);
@@ -89,6 +134,7 @@ export const useToteCalculatorStore = defineStore("toteCalculator", () => {
       currency: currency.value,
       payoutPercentage: payoutPercentage.value,
       ticketPrice: ticketPrice.value,
+      numberOfRunners: numberOfRunners.value,
     };
     savedRaces.value.push(raceData);
 
@@ -123,7 +169,14 @@ export const useToteCalculatorStore = defineStore("toteCalculator", () => {
     if (import.meta.client) {
       const saved = localStorage.getItem("tote-saved-races");
       if (saved) {
-        savedRaces.value = JSON.parse(saved);
+        const loadedRaces = JSON.parse(saved);
+        // Migrate old races without numberOfRunners field
+        savedRaces.value = loadedRaces.map(
+          (race: LegacySavedRace): SavedRace => ({
+            ...race,
+            numberOfRunners: race.numberOfRunners || race.runners.length,
+          }),
+        );
       }
     }
   };
@@ -132,11 +185,11 @@ export const useToteCalculatorStore = defineStore("toteCalculator", () => {
     if (savedRaces.value.length === 0) return;
 
     const csvHeaders =
-      "Date,Total Tickets,Total Revenue,Total Payout,Charity Profit,Payout %,Currency\n";
+      "Date,Total Tickets,Total Revenue,Total Payout,Charity Profit,Payout %,Currency,Runners\n";
     const csvRows = savedRaces.value
       .map((race) => {
         const date = new Date(race.timestamp).toLocaleDateString();
-        return `${date},${race.totalTickets},${race.totalRevenue.toFixed(2)},${race.totalPayout.toFixed(2)},${race.charityProfit.toFixed(2)},${race.payoutPercentage}%,${race.currency}`;
+        return `${date},${race.totalTickets},${race.totalRevenue.toFixed(2)},${race.totalPayout.toFixed(2)},${race.charityProfit.toFixed(2)},${race.payoutPercentage}%,${race.currency},${race.numberOfRunners || race.runners.length}`;
       })
       .join("\n");
 
@@ -162,6 +215,7 @@ export const useToteCalculatorStore = defineStore("toteCalculator", () => {
     payoutPercentage,
     rounding,
     ticketPrice,
+    numberOfRunners,
     runners,
     savedRaces,
     totalTickets,
@@ -169,6 +223,7 @@ export const useToteCalculatorStore = defineStore("toteCalculator", () => {
     totalPayout,
     charityProfit,
     calculatePayouts,
+    updateRunners,
     saveRace,
     resetRace,
     deleteRace,

@@ -1,9 +1,4 @@
 <template>
-  <Html class="dark">
-    <Head>
-      <Title>Tote Calculator</Title>
-    </Head>
-  </Html>
   <div class="min-h-screen bg-neutral-950">
     <header
       class="border-b border-neutral-700 bg-neutral-800/90 shadow-lg backdrop-blur-sm"
@@ -16,18 +11,25 @@
           />
           <div>
             <h1 class="text-3xl font-bold text-neutral-100">Tote Calculator</h1>
-            <p class="text-sm text-neutral-400">15 Runner Betting System</p>
+            <p class="text-sm text-neutral-400" role="doc-subtitle">
+              Customizable Runner Betting System
+            </p>
           </div>
         </div>
       </div>
     </header>
 
-    <main class="animate-fade-in py-6">
+    <main
+      class="animate-fade-in py-6"
+      role="main"
+      aria-label="Tote betting calculator interface"
+    >
       <ToteCalculator />
     </main>
 
     <footer
       class="mt-12 border-t border-neutral-700 bg-neutral-800/90 backdrop-blur-sm"
+      role="contentinfo"
     >
       <div class="mx-auto max-w-4xl px-6 py-4">
         <p class="text-center text-sm text-neutral-400">
