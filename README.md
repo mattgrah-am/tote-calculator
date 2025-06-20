@@ -171,6 +171,7 @@ No environment variables required - the app runs entirely client-side.
 - Modify `tailwind.config.js` for design system changes
 - Update `stores/toteCalculator.ts` for business logic modifications
 - Adjust responsive breakpoints in component templates
+- Configure ESLint rules in `eslint.config.mjs` for code style preferences
 
 ## 📦 Dependencies
 
@@ -193,6 +194,11 @@ No environment variables required - the app runs entirely client-side.
 - **prettier**: ^3.5.3 - Code formatting
 - **prettier-plugin-tailwindcss**: ^0.6.13 - Tailwind class sorting
 - **typescript**: Latest - Type safety
+
+### ESLint Configuration
+- Custom rules configured to allow self-closing HTML void elements
+- Nuxt 3 ESLint integration with Vue.js support
+- Automatic code quality enforcement
 
 ## 🤝 Contributing
 

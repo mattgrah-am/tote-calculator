@@ -35,7 +35,7 @@
             step="0.01"
             min="0.01"
             class="w-full rounded-md border border-neutral-600 bg-neutral-700 px-3 py-2 text-neutral-100 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-          />
+          >
         </div>
 
         <div>
@@ -48,7 +48,7 @@
             min="0"
             max="100"
             class="h-2 w-full cursor-pointer appearance-none rounded-lg bg-neutral-600"
-          />
+          >
         </div>
 
         <div>
@@ -122,7 +122,7 @@
                   min="0"
                   class="w-24 rounded border border-neutral-600 bg-neutral-700 px-2 py-1 text-center text-neutral-100 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                   @input="store.calculatePayouts"
-                />
+                >
               </td>
               <td class="px-2 py-3 text-center font-medium">
                 <span
